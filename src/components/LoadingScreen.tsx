@@ -10,7 +10,12 @@ const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
   const [phase, setPhase] = useState<'loading' | 'complete' | 'exit'>('loading');
 
   useEffect(() => {
-    // Simulate loading progress
+    // 5 second loading animation
+    const duration = 5000;
+    const intervalTime = 50;
+    const steps = duration / intervalTime;
+    const incrementPerStep = 100 / steps;
+    
     const interval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
@@ -19,14 +24,14 @@ const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
           setTimeout(() => {
             setPhase('exit');
             setTimeout(onLoadingComplete, 800);
-          }, 600);
+          }, 400);
           return 100;
         }
-        // Accelerating progress
-        const increment = Math.random() * 15 + 5;
-        return Math.min(prev + increment, 100);
+        // Smooth progress with slight variation
+        const variation = (Math.random() - 0.5) * 0.5;
+        return Math.min(prev + incrementPerStep + variation, 100);
       });
-    }, 150);
+    }, intervalTime);
 
     return () => clearInterval(interval);
   }, [onLoadingComplete]);
