@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { ScrollReveal } from '@/components/ScrollReveal';
 
 const platforms = [
   { 
@@ -116,9 +118,11 @@ const platforms = [
 const InteractiveMap = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
 
   useEffect(() => {
-    if (!mapRef.current || mapInstanceRef.current) return;
+    if (!mapRef.current || mapInstanceRef.current || !isInView) return;
 
     // Initialize map
     const map = L.map(mapRef.current, {
@@ -165,36 +169,38 @@ const InteractiveMap = () => {
       });
     };
 
-    // Add markers
-    platforms.forEach((platform) => {
-      const marker = L.marker([platform.lat, platform.lng], {
-        icon: createIcon(platform.type)
-      }).addTo(map);
+    // Add markers with delay for animation effect
+    platforms.forEach((platform, index) => {
+      setTimeout(() => {
+        const marker = L.marker([platform.lat, platform.lng], {
+          icon: createIcon(platform.type)
+        }).addTo(map);
 
-      marker.bindPopup(`
-        <div style="
-          background: linear-gradient(180deg, hsl(222 47% 10%) 0%, hsl(222 47% 6%) 100%);
-          padding: 16px;
-          border-radius: 12px;
-          min-width: 200px;
-          color: white;
-          font-family: 'Inter', sans-serif;
-        ">
+        marker.bindPopup(`
           <div style="
-            font-size: 10px;
-            color: #f97316;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 4px;
-          ">${platform.type}</div>
-          <div style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">${platform.name}</div>
-          <div style="font-size: 12px; color: #94a3b8; margin-bottom: 4px;">📍 ${platform.country}</div>
-          <div style="font-size: 14px; font-weight: 600; color: #f97316;">⚡ ${platform.production}</div>
-        </div>
-      `, {
-        className: 'custom-popup',
-        closeButton: false,
-      });
+            background: linear-gradient(180deg, hsl(222 47% 10%) 0%, hsl(222 47% 6%) 100%);
+            padding: 16px;
+            border-radius: 12px;
+            min-width: 200px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+          ">
+            <div style="
+              font-size: 10px;
+              color: #f97316;
+              text-transform: uppercase;
+              letter-spacing: 0.1em;
+              margin-bottom: 4px;
+            ">${platform.type}</div>
+            <div style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">${platform.name}</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-bottom: 4px;">📍 ${platform.country}</div>
+            <div style="font-size: 14px; font-weight: 600; color: #f97316;">⚡ ${platform.production}</div>
+          </div>
+        `, {
+          className: 'custom-popup',
+          closeButton: false,
+        });
+      }, index * 100);
     });
 
     // Add custom CSS for animations
@@ -225,13 +231,13 @@ const InteractiveMap = () => {
       }
       style.remove();
     };
-  }, []);
+  }, [isInView]);
 
   return (
-    <section className="py-24 bg-card-gradient relative overflow-hidden">
+    <section ref={sectionRef} className="py-24 bg-card-gradient relative overflow-hidden">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center mb-12">
+        <ScrollReveal animation="fadeUp" className="text-center mb-12">
           <span className="text-accent font-semibold tracking-widest uppercase text-sm">
             Presença Global
           </span>
@@ -241,53 +247,75 @@ const InteractiveMap = () => {
           <p className="text-muted-foreground text-lg mt-4 max-w-2xl mx-auto">
             Explore nossas operações ao redor do mundo. Clique nos marcadores para ver detalhes de cada instalação.
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* Legend */}
-        <div className="flex flex-wrap justify-center gap-6 mb-8">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-accent shadow-glow" />
-            <span className="text-sm text-muted-foreground">Produção</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-blue-500" style={{ boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)' }} />
-            <span className="text-sm text-muted-foreground">Refino</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-green-500" style={{ boxShadow: '0 0 15px rgba(34, 197, 94, 0.5)' }} />
-            <span className="text-sm text-muted-foreground">Energia Eólica</span>
-          </div>
-        </div>
+        <motion.div 
+          className="flex flex-wrap justify-center gap-6 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          {[
+            { color: 'bg-accent', shadow: 'rgba(249, 115, 22, 0.5)', label: 'Produção' },
+            { color: 'bg-blue-500', shadow: 'rgba(59, 130, 246, 0.5)', label: 'Refino' },
+            { color: 'bg-green-500', shadow: 'rgba(34, 197, 94, 0.5)', label: 'Energia Eólica' }
+          ].map((item) => (
+            <motion.div 
+              key={item.label}
+              className="flex items-center gap-2"
+              whileHover={{ scale: 1.1 }}
+            >
+              <div 
+                className={`w-4 h-4 rounded-full ${item.color}`} 
+                style={{ boxShadow: `0 0 15px ${item.shadow}` }} 
+              />
+              <span className="text-sm text-muted-foreground">{item.label}</span>
+            </motion.div>
+          ))}
+        </motion.div>
 
         {/* Map Container */}
-        <div className="relative rounded-2xl overflow-hidden border border-border shadow-elevated">
+        <motion.div 
+          className="relative rounded-2xl overflow-hidden border border-border shadow-elevated"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.7, delay: 0.4 }}
+        >
           <div 
             ref={mapRef} 
             className="w-full h-[500px] md:h-[600px]"
           />
           {/* Overlay gradient for edges */}
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-background/20 via-transparent to-background/20" />
-        </div>
+        </motion.div>
 
         {/* Stats below map */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-          <div className="text-center p-4 border-gradient rounded-xl bg-card">
-            <div className="text-2xl font-black text-accent">18</div>
-            <div className="text-sm text-muted-foreground">Países</div>
-          </div>
-          <div className="text-center p-4 border-gradient rounded-xl bg-card">
-            <div className="text-2xl font-black text-accent">42</div>
-            <div className="text-sm text-muted-foreground">Plataformas</div>
-          </div>
-          <div className="text-center p-4 border-gradient rounded-xl bg-card">
-            <div className="text-2xl font-black text-accent">8</div>
-            <div className="text-sm text-muted-foreground">Refinarias</div>
-          </div>
-          <div className="text-center p-4 border-gradient rounded-xl bg-card">
-            <div className="text-2xl font-black text-accent">5</div>
-            <div className="text-sm text-muted-foreground">Parques Eólicos</div>
-          </div>
-        </div>
+        <motion.div 
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8"
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
+          {[
+            { value: '18', label: 'Países' },
+            { value: '42', label: 'Plataformas' },
+            { value: '8', label: 'Refinarias' },
+            { value: '5', label: 'Parques Eólicos' }
+          ].map((stat, index) => (
+            <motion.div 
+              key={stat.label}
+              className="text-center p-4 border-gradient rounded-xl bg-card"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}
+              transition={{ duration: 0.4, delay: 0.9 + index * 0.1 }}
+              whileHover={{ scale: 1.05, y: -5 }}
+            >
+              <div className="text-2xl font-black text-accent">{stat.value}</div>
+              <div className="text-sm text-muted-foreground">{stat.label}</div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
