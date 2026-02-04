@@ -5,6 +5,7 @@ import GlobalNumbers from '@/components/GlobalNumbers';
 import Timeline from '@/components/Timeline';
 import Segments from '@/components/Segments';
 import Technology from '@/components/Technology';
+import Dashboard from '@/components/Dashboard';
 import InteractiveMap from '@/components/InteractiveMap';
 import Partners from '@/components/Partners';
 import Sustainability from '@/components/Sustainability';
@@ -32,6 +33,7 @@ const Index = () => {
         <Timeline />
         <Segments />
         <Technology />
+        <Dashboard />
         <InteractiveMap />
         <Partners />
         <Sustainability />
