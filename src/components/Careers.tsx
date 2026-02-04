@@ -1,5 +1,8 @@
 import { Users, GraduationCap, Heart, Rocket } from 'lucide-react';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
+import { ScrollReveal } from '@/components/ScrollReveal';
 
 const benefits = [
   {
@@ -24,7 +27,40 @@ const benefits = [
   },
 ];
 
+const BenefitCard = ({ benefit, index }: { benefit: typeof benefits[0]; index: number }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.5 });
+
+  return (
+    <motion.div
+      ref={ref}
+      className="p-6 border-gradient rounded-2xl bg-card-gradient text-center hover:shadow-glow transition-shadow duration-300"
+      initial={{ opacity: 0, y: 60, rotateX: 20 }}
+      animate={isInView ? { opacity: 1, y: 0, rotateX: 0 } : { opacity: 0, y: 60, rotateX: 20 }}
+      transition={{ 
+        duration: 0.6, 
+        delay: index * 0.15,
+        ease: [0.25, 0.1, 0.25, 1]
+      }}
+      whileHover={{ y: -10, scale: 1.05 }}
+    >
+      <motion.div 
+        className="w-14 h-14 mx-auto rounded-2xl bg-accent/10 flex items-center justify-center mb-4"
+        whileHover={{ rotate: 360, scale: 1.1 }}
+        transition={{ duration: 0.6 }}
+      >
+        <benefit.icon className="w-7 h-7 text-accent" />
+      </motion.div>
+      <h3 className="font-bold text-foreground mb-2">{benefit.title}</h3>
+      <p className="text-sm text-muted-foreground">{benefit.description}</p>
+    </motion.div>
+  );
+};
+
 const Careers = () => {
+  const ctaRef = useRef(null);
+  const ctaInView = useInView(ctaRef, { once: true, amount: 0.5 });
+
   return (
     <section id="carreiras" className="py-24 bg-background relative overflow-hidden">
       {/* Background Pattern */}
@@ -35,7 +71,7 @@ const Careers = () => {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-4xl mx-auto text-center mb-16">
+        <ScrollReveal animation="fadeUp" className="max-w-4xl mx-auto text-center mb-16">
           <span className="text-accent font-semibold tracking-widest uppercase text-sm">
             Carreiras
           </span>
@@ -48,33 +84,40 @@ const Careers = () => {
             remuneração competitiva para profissionais que desejam fazer a diferença 
             no setor de energia.
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* Benefits Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {benefits.map((benefit) => (
-            <div
-              key={benefit.title}
-              className="p-6 border-gradient rounded-2xl bg-card-gradient text-center hover:shadow-glow transition-all duration-300"
-            >
-              <div className="w-14 h-14 mx-auto rounded-2xl bg-accent/10 flex items-center justify-center mb-4">
-                <benefit.icon className="w-7 h-7 text-accent" />
-              </div>
-              <h3 className="font-bold text-foreground mb-2">{benefit.title}</h3>
-              <p className="text-sm text-muted-foreground">{benefit.description}</p>
-            </div>
+          {benefits.map((benefit, index) => (
+            <BenefitCard key={benefit.title} benefit={benefit} index={index} />
           ))}
         </div>
 
         {/* CTA */}
-        <div className="text-center">
-          <Button variant="hero" size="xl">
-            Ver Vagas Disponíveis
-          </Button>
-          <p className="text-sm text-muted-foreground mt-4">
+        <motion.div 
+          ref={ctaRef}
+          className="text-center"
+          initial={{ opacity: 0, y: 40 }}
+          animate={ctaInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Button variant="hero" size="xl">
+              Ver Vagas Disponíveis
+            </Button>
+          </motion.div>
+          <motion.p 
+            className="text-sm text-muted-foreground mt-4"
+            initial={{ opacity: 0 }}
+            animate={ctaInView ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+          >
             Mais de 500 vagas abertas em todo o mundo
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
       </div>
     </section>
   );

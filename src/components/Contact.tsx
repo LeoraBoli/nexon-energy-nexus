@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { MapPin, Phone, Mail, Send } from 'lucide-react';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
+import { ScrollReveal } from '@/components/ScrollReveal';
 
 const offices = [
   { city: 'Houston', country: 'EUA', type: 'Sede Global' },
@@ -20,6 +23,11 @@ const Contact = () => {
     message: '',
   });
 
+  const formRef = useRef(null);
+  const formInView = useInView(formRef, { once: true, amount: 0.2 });
+  const officesRef = useRef(null);
+  const officesInView = useInView(officesRef, { once: true, amount: 0.2 });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
@@ -29,24 +37,34 @@ const Contact = () => {
     <section id="contato" className="py-24 bg-card-gradient relative">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <ScrollReveal animation="fadeUp" className="text-center mb-16">
           <span className="text-accent font-semibold tracking-widest uppercase text-sm">
             Contato Global
           </span>
           <h2 className="text-4xl md:text-5xl font-bold mt-4">
             Fale <span className="text-gradient-accent">conosco</span>
           </h2>
-        </div>
+        </ScrollReveal>
 
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Contact Form */}
-          <div className="border-gradient rounded-2xl p-8 bg-card">
+          <motion.div 
+            ref={formRef}
+            className="border-gradient rounded-2xl p-8 bg-card"
+            initial={{ opacity: 0, x: -80 }}
+            animate={formInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -80 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+          >
             <h3 className="text-xl font-bold text-foreground mb-6">
               Envie sua mensagem
             </h3>
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid sm:grid-cols-2 gap-5">
-                <div>
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={formInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                >
                   <label className="text-sm font-medium text-muted-foreground mb-2 block">
                     Nome completo
                   </label>
@@ -57,8 +75,12 @@ const Contact = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
-                </div>
-                <div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={formInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
                   <label className="text-sm font-medium text-muted-foreground mb-2 block">
                     Email corporativo
                   </label>
@@ -69,10 +91,14 @@ const Contact = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
-                </div>
+                </motion.div>
               </div>
               <div className="grid sm:grid-cols-2 gap-5">
-                <div>
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={formInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                >
                   <label className="text-sm font-medium text-muted-foreground mb-2 block">
                     Empresa
                   </label>
@@ -83,8 +109,12 @@ const Contact = () => {
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                   />
-                </div>
-                <div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={formInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                >
                   <label className="text-sm font-medium text-muted-foreground mb-2 block">
                     Assunto
                   </label>
@@ -100,9 +130,13 @@ const Contact = () => {
                     <option value="careers">Carreiras</option>
                     <option value="other">Outro</option>
                   </select>
-                </div>
+                </motion.div>
               </div>
-              <div>
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                animate={formInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
                 <label className="text-sm font-medium text-muted-foreground mb-2 block">
                   Mensagem
                 </label>
@@ -113,51 +147,86 @@ const Contact = () => {
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 />
-              </div>
-              <Button variant="hero" size="lg" className="w-full">
-                <Send className="w-4 h-4" />
-                Enviar Mensagem
-              </Button>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={formInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button variant="hero" size="lg" className="w-full">
+                  <Send className="w-4 h-4" />
+                  Enviar Mensagem
+                </Button>
+              </motion.div>
             </form>
-          </div>
+          </motion.div>
 
           {/* Offices */}
-          <div>
-            <h3 className="text-xl font-bold text-foreground mb-6">
+          <div ref={officesRef}>
+            <motion.h3 
+              className="text-xl font-bold text-foreground mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={officesInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.5 }}
+            >
               Nossos Escritórios
-            </h3>
+            </motion.h3>
             <div className="grid sm:grid-cols-2 gap-4">
-              {offices.map((office) => (
-                <div
+              {offices.map((office, index) => (
+                <motion.div
                   key={office.city}
                   className="p-5 border-gradient rounded-xl bg-card hover:shadow-glow transition-all duration-300"
+                  initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                  animate={officesInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 40, scale: 0.9 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
                 >
                   <div className="flex items-start gap-3">
-                    <MapPin className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                    <motion.div
+                      whileHover={{ rotate: 360 }}
+                      transition={{ duration: 0.6 }}
+                    >
+                      <MapPin className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                    </motion.div>
                     <div>
                       <div className="font-bold text-foreground">{office.city}</div>
                       <div className="text-sm text-muted-foreground">{office.country}</div>
                       <div className="text-xs text-accent mt-1">{office.type}</div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
 
             {/* Contact Info */}
-            <div className="mt-8 p-6 border-gradient rounded-2xl bg-card">
+            <motion.div 
+              className="mt-8 p-6 border-gradient rounded-2xl bg-card"
+              initial={{ opacity: 0, y: 40 }}
+              animate={officesInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
               <h4 className="font-bold text-foreground mb-4">Contato Direto</h4>
               <div className="space-y-3">
-                <a href="tel:+1-800-NEXON" className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors">
+                <motion.a 
+                  href="tel:+1-800-NEXON" 
+                  className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
+                  whileHover={{ x: 10 }}
+                >
                   <Phone className="w-5 h-5 text-accent" />
                   +1 (800) NEXON-00
-                </a>
-                <a href="mailto:contact@nexonenergy.com" className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors">
+                </motion.a>
+                <motion.a 
+                  href="mailto:contact@nexonenergy.com" 
+                  className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
+                  whileHover={{ x: 10 }}
+                >
                   <Mail className="w-5 h-5 text-accent" />
                   contact@nexonenergy.com
-                </a>
+                </motion.a>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
