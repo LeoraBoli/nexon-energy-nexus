@@ -1,4 +1,5 @@
 import { Droplet, Settings, Ship, Leaf } from 'lucide-react';
+import { useRef, useState, useEffect } from 'react';
 import refineryImg from '@/assets/refinery.jpg';
 import tankerImg from '@/assets/tanker.jpg';
 import windFarmImg from '@/assets/wind-farm.jpg';
@@ -31,6 +32,62 @@ const segments = [
   },
 ];
 
+const SegmentCard = ({ segment, index }: { segment: typeof segments[0]; index: number }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [parallaxOffset, setParallaxOffset] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!cardRef.current) return;
+      const rect = cardRef.current.getBoundingClientRect();
+      const scrolled = window.innerHeight - rect.top;
+      setParallaxOffset(scrolled * 0.1);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <div
+      ref={cardRef}
+      className="group relative overflow-hidden rounded-2xl border-gradient bg-card shadow-card hover:shadow-glow transition-all duration-500"
+    >
+      {/* Parallax Background Image */}
+      <div className="absolute inset-0 overflow-hidden">
+        <img
+          src={segment.image}
+          alt={segment.title}
+          className="w-full h-[130%] object-cover opacity-30 group-hover:opacity-50 transition-opacity duration-700"
+          style={{ 
+            transform: `translateY(${parallaxOffset}px) scale(1.1)`,
+            transition: 'transform 0.1s ease-out, opacity 0.7s ease'
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-transparent" />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 p-8 md:p-10 min-h-[300px] flex flex-col justify-end">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+            <segment.icon className="w-7 h-7 text-accent" />
+          </div>
+          <div className="text-sm font-medium text-accent tracking-wide uppercase">
+            0{index + 1}
+          </div>
+        </div>
+        <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+          {segment.title}
+        </h3>
+        <p className="text-muted-foreground leading-relaxed">
+          {segment.description}
+        </p>
+      </div>
+    </div>
+  );
+};
+
 const Segments = () => {
   return (
     <section id="operacoes" className="py-24 bg-background relative">
@@ -52,38 +109,7 @@ const Segments = () => {
         {/* Segments Grid */}
         <div className="grid md:grid-cols-2 gap-6">
           {segments.map((segment, index) => (
-            <div
-              key={segment.title}
-              className="group relative overflow-hidden rounded-2xl border-gradient bg-card shadow-card hover:shadow-glow transition-all duration-500"
-            >
-              {/* Background Image */}
-              <div className="absolute inset-0">
-                <img
-                  src={segment.image}
-                  alt={segment.title}
-                  className="w-full h-full object-cover opacity-30 group-hover:opacity-50 group-hover:scale-110 transition-all duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-transparent" />
-              </div>
-
-              {/* Content */}
-              <div className="relative z-10 p-8 md:p-10 min-h-[300px] flex flex-col justify-end">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
-                    <segment.icon className="w-7 h-7 text-accent" />
-                  </div>
-                  <div className="text-sm font-medium text-accent tracking-wide uppercase">
-                    0{index + 1}
-                  </div>
-                </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-                  {segment.title}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {segment.description}
-                </p>
-              </div>
-            </div>
+            <SegmentCard key={segment.title} segment={segment} index={index} />
           ))}
         </div>
       </div>

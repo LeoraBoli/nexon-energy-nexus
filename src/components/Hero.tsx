@@ -1,20 +1,17 @@
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
+import ParallaxImage from '@/components/ParallaxImage';
 import heroPlatform from '@/assets/hero-platform.jpg';
 
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      <div className="absolute inset-0">
-        <img
-          src={heroPlatform}
-          alt="Plataforma offshore NEXON Energy"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-dark-overlay" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/50 to-transparent" />
-      </div>
+      {/* Parallax Background Image */}
+      <ParallaxImage
+        src={heroPlatform}
+        alt="Plataforma offshore NEXON Energy"
+        speed={0.5}
+      />
 
       {/* Content */}
       <div className="container relative z-10 mx-auto px-4 pt-24">

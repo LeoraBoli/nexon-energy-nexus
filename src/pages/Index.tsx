@@ -1,8 +1,10 @@
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import GlobalNumbers from '@/components/GlobalNumbers';
+import Timeline from '@/components/Timeline';
 import Segments from '@/components/Segments';
 import Technology from '@/components/Technology';
+import InteractiveMap from '@/components/InteractiveMap';
 import Sustainability from '@/components/Sustainability';
 import News from '@/components/News';
 import Careers from '@/components/Careers';
@@ -15,8 +17,10 @@ const Index = () => {
       <Header />
       <Hero />
       <GlobalNumbers />
+      <Timeline />
       <Segments />
       <Technology />
+      <InteractiveMap />
       <Sustainability />
       <News />
       <Careers />
