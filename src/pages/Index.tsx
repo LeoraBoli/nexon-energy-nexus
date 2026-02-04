@@ -12,25 +12,28 @@ import Careers from '@/components/Careers';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import CustomCursor from '@/components/CustomCursor';
+import SoundProvider from '@/components/SoundProvider';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <CustomCursor />
-      <Header />
-      <Hero />
-      <GlobalNumbers />
-      <Timeline />
-      <Segments />
-      <Technology />
-      <InteractiveMap />
-      <Partners />
-      <Sustainability />
-      <News />
-      <Careers />
-      <Contact />
-      <Footer />
-    </div>
+    <SoundProvider>
+      <div className="min-h-screen bg-background">
+        <CustomCursor />
+        <Header />
+        <Hero />
+        <GlobalNumbers />
+        <Timeline />
+        <Segments />
+        <Technology />
+        <InteractiveMap />
+        <Partners />
+        <Sustainability />
+        <News />
+        <Careers />
+        <Contact />
+        <Footer />
+      </div>
+    </SoundProvider>
   );
 };
 

@@ -1,5 +1,6 @@
-import { Globe, Ship, Users, Droplets } from 'lucide-react';
+import { Globe, Ship, Users, Droplets, TrendingUp, Award } from 'lucide-react';
 import { ScrollReveal, StaggerContainer, StaggerItem, AnimatedCounter } from '@/components/ScrollReveal';
+import { useSound } from '@/hooks/useSoundEffects';
 
 const stats = [
   {
@@ -7,32 +8,48 @@ const stats = [
     value: 18,
     suffix: '',
     label: 'Países',
-    description: 'Presença global',
+    description: 'Operações em 5 continentes',
   },
   {
     icon: Ship,
     value: 42,
     suffix: '',
     label: 'Plataformas',
-    description: 'Operações offshore',
+    description: 'Offshore e onshore',
   },
   {
     icon: Users,
     value: 120,
-    suffix: 'mil',
-    label: 'Funcionários',
-    description: 'Equipe global',
+    suffix: 'K',
+    label: 'Colaboradores',
+    description: 'Equipe global diversa',
   },
   {
     icon: Droplets,
     value: 3.4,
     suffix: 'M',
     label: 'Barris/dia',
-    description: 'Produção diária',
+    description: 'Capacidade de produção',
+  },
+  {
+    icon: TrendingUp,
+    value: 98,
+    suffix: 'B',
+    label: 'Receita USD',
+    description: 'Ano fiscal 2024',
+  },
+  {
+    icon: Award,
+    value: 15,
+    suffix: '+',
+    label: 'Anos S&P A+',
+    description: 'Investment grade',
   },
 ];
 
 const GlobalNumbers = () => {
+  const { playHover } = useSound();
+
   return (
     <section id="numeros" className="py-24 bg-card-gradient relative overflow-hidden">
       {/* Decorative grid */}
@@ -47,24 +64,30 @@ const GlobalNumbers = () => {
         {/* Section Header */}
         <ScrollReveal animation="fadeUp" className="text-center mb-16">
           <span className="text-accent font-semibold tracking-widest uppercase text-sm">
-            Números Globais
+            Resultados Globais
           </span>
           <h2 className="text-4xl md:text-5xl font-bold mt-4">
             Impacto em <span className="text-gradient-accent">escala mundial</span>
           </h2>
+          <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
+            Números que refletem nossa posição de liderança no setor energético global
+          </p>
         </ScrollReveal>
 
         {/* Stats Grid */}
-        <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-8" staggerDelay={0.15}>
+        <StaggerContainer className="grid grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={0.1}>
           {stats.map((stat) => (
             <StaggerItem key={stat.label} animation="scale">
-              <div className="border-gradient rounded-2xl p-8 bg-card-gradient shadow-card hover:shadow-glow transition-all duration-500 group h-full">
+              <div 
+                className="border-gradient rounded-2xl p-6 bg-card-gradient shadow-card hover:shadow-glow transition-all duration-500 group h-full"
+                onMouseEnter={playHover}
+              >
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
                     <stat.icon className="w-6 h-6 text-accent" />
                   </div>
                 </div>
-                <div className="text-4xl md:text-5xl font-black text-foreground mb-2">
+                <div className="text-3xl md:text-4xl font-black text-foreground mb-2">
                   <AnimatedCounter end={stat.value} suffix={stat.suffix} />
                 </div>
                 <div className="text-lg font-semibold text-foreground mb-1">{stat.label}</div>
@@ -73,6 +96,14 @@ const GlobalNumbers = () => {
             </StaggerItem>
           ))}
         </StaggerContainer>
+
+        {/* Bottom ticker */}
+        <div className="mt-12 flex items-center justify-center gap-8 text-sm text-muted-foreground">
+          <span>NYSE: NXE</span>
+          <span className="text-accent">$127.45 (+2.4%)</span>
+          <span>Market Cap: $156B</span>
+          <span>Dividend Yield: 4.2%</span>
+        </div>
       </div>
     </section>
   );

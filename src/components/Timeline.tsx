@@ -1,56 +1,72 @@
-import { Rocket, Building, Globe, Award, Leaf, Zap } from 'lucide-react';
+import { Rocket, Building, Globe, Award, Leaf, Zap, Shield, BarChart3 } from 'lucide-react';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { ScrollReveal } from '@/components/ScrollReveal';
+import { useSound } from '@/hooks/useSoundEffects';
 
 const timelineEvents = [
   {
     year: '1987',
     icon: Building,
-    title: 'Fundação',
-    description: 'NEXON Energy é fundada em Houston, Texas, com foco inicial em exploração terrestre no Golfo do México.',
+    title: 'Fundação da Companhia',
+    description: 'NEXON Energy Corporation é constituída em Houston, Texas, com capital inicial de $50M. Primeira concessão no Golfo do México (Bloco GOM-127).',
     highlight: false,
-    stats: '1ª operação',
+    stats: 'Capital: $50M',
+    location: 'Houston, TX',
   },
   {
-    year: '1995',
+    year: '1994',
     icon: Rocket,
-    title: 'Primeira Plataforma Offshore',
-    description: 'Inauguração da primeira plataforma em águas profundas, marcando entrada no segmento offshore.',
+    title: 'Descoberta de Deepwater Horizon',
+    description: 'Descoberta do campo gigante Thunder Horse no Golfo do México com reservas estimadas de 1 bilhão de barris. IPO na NYSE com valorização de $2.1B.',
     highlight: true,
-    stats: '500m profundidade',
+    stats: '1B barris',
+    location: 'Golfo do México',
   },
   {
-    year: '2003',
+    year: '2002',
     icon: Globe,
-    title: 'Expansão Internacional',
-    description: 'Início das operações no Brasil, Nigéria e Mar do Norte, consolidando presença global.',
+    title: 'Expansão para Bacia de Santos',
+    description: 'Joint venture com Petrobras para exploração do pré-sal brasileiro. Investimento de $3.2B em tecnologia de perfuração em águas ultraprofundas.',
     highlight: false,
-    stats: '5 países',
+    stats: 'Invest: $3.2B',
+    location: 'Santos, Brasil',
   },
   {
-    year: '2010',
-    icon: Award,
-    title: 'Líder em Segurança',
-    description: 'Reconhecida como referência mundial em segurança operacional com zero acidentes fatais.',
+    year: '2008',
+    icon: Shield,
+    title: 'Certificação ISO 45001',
+    description: 'Primeira empresa do setor a obter certificação em segurança ocupacional global. Zero acidentes fatais por 5 anos consecutivos.',
     highlight: true,
-    stats: '0 acidentes',
+    stats: '0 fatalidades',
+    location: 'Global',
   },
   {
-    year: '2018',
-    icon: Leaf,
-    title: 'Compromisso ESG',
-    description: 'Lançamento do programa de sustentabilidade com metas ambiciosas de redução de carbono.',
+    year: '2015',
+    icon: BarChart3,
+    title: 'Aquisição da Nordic Petroleum',
+    description: 'Compra estratégica da Nordic Petroleum por $8.7B, expandindo operações para Mar do Norte e adicionando 15 plataformas ao portfólio.',
     highlight: false,
-    stats: '-25% CO₂',
+    stats: '+15 plataformas',
+    location: 'Mar do Norte',
+  },
+  {
+    year: '2019',
+    icon: Leaf,
+    title: 'Compromisso Net Zero 2050',
+    description: 'Anúncio do programa "Energy Transition 2050" com investimento de $45B em renováveis até 2035. Primeira fazenda eólica offshore inaugurada.',
+    highlight: true,
+    stats: '$45B renováveis',
+    location: 'Global',
   },
   {
     year: '2024',
     icon: Zap,
-    title: 'Transição Energética',
-    description: 'Inauguração do maior parque eólico offshore da América Latina e meta Net Zero 2050.',
+    title: 'Líder em Energia Limpa',
+    description: 'Capacidade renovável atinge 8.5 GW. Hidrogênio verde em escala comercial na Holanda. Receita anual supera $98B com EBITDA de $42B.',
     highlight: true,
-    stats: '2.5 GW',
+    stats: '8.5 GW limpo',
+    location: 'Roterdã, NL',
   },
 ];
 
@@ -58,6 +74,7 @@ const TimelineItem = ({ event, index }: { event: typeof timelineEvents[0]; index
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.5 });
   const isEven = index % 2 === 0;
+  const { playHover } = useSound();
 
   return (
     <motion.div
@@ -66,6 +83,7 @@ const TimelineItem = ({ event, index }: { event: typeof timelineEvents[0]; index
       initial={{ opacity: 0 }}
       animate={isInView ? { opacity: 1 } : { opacity: 0 }}
       transition={{ duration: 0.6 }}
+      onMouseEnter={playHover}
     >
       {/* Connection line to center */}
       <motion.div
@@ -106,12 +124,15 @@ const TimelineItem = ({ event, index }: { event: typeof timelineEvents[0]; index
         <h3 className="text-xl font-bold text-foreground mb-2">{event.title}</h3>
         <p className="text-muted-foreground text-sm leading-relaxed mb-4">{event.description}</p>
 
-        {/* Stats badge */}
-        <div className="flex items-center gap-2">
+        {/* Stats & Location */}
+        <div className="flex items-center gap-2 flex-wrap">
           <div className={`px-3 py-1 rounded-lg text-xs font-bold ${
             event.highlight ? 'bg-accent text-accent-foreground' : 'bg-secondary text-foreground'
           }`}>
             {event.stats}
+          </div>
+          <div className="px-3 py-1 rounded-lg text-xs text-muted-foreground bg-background/50">
+            📍 {event.location}
           </div>
         </div>
       </motion.div>
@@ -135,11 +156,11 @@ const Timeline = () => {
             Nossa História
           </span>
           <h2 className="text-4xl md:text-5xl font-bold mt-4">
-            Décadas de <span className="text-gradient-accent">excelência</span>
+            37 anos de <span className="text-gradient-accent">excelência</span>
           </h2>
           <p className="text-muted-foreground text-lg mt-4 max-w-2xl mx-auto">
-            Desde 1987, construímos uma trajetória de inovação, segurança e 
-            compromisso com o desenvolvimento energético sustentável.
+            De uma startup em Houston a um dos maiores grupos de energia do mundo. 
+            Nossa trajetória é marcada por inovação, aquisições estratégicas e compromisso ESG.
           </p>
         </ScrollReveal>
 
@@ -197,19 +218,19 @@ const Timeline = () => {
           </div>
         </div>
 
-        {/* Bottom Stats */}
+        {/* Bottom Financial Stats */}
         <motion.div
-          className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto"
+          className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.5 }}
         >
           {[
-            { value: '37+', label: 'Anos de história' },
+            { value: '$98B', label: 'Receita 2024' },
+            { value: '$42B', label: 'EBITDA' },
             { value: '18', label: 'Países' },
-            { value: '120K', label: 'Colaboradores' },
-            { value: '42', label: 'Plataformas' }
+            { value: 'A+', label: 'Rating S&P' }
           ].map((stat, i) => (
             <motion.div
               key={stat.label}
